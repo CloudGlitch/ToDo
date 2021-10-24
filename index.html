@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+  <link rel="icon" href="https://www.linkpicture.com/q/new-logo.png">
+  <meta name="msvalidate.01" content="985E31D4671410081DE1A38A31F66B02" />
+  <meta name='author' content='Weberg Studios'>
+  <meta name="description" content="Weberg Search developed by Weberg Studios. Find us on github to contact , report bug or issues and suggestions." />
+    <title>
+Weberg To-do
+    </title>
+    <style>
+* {
+ font-family:Century Gothic;
+ color:black;
+}
+#headh1 {
+ font-size:40px;
+}
+#todo-item {
+ width:90%;
+border:2px solid black;
+ height:30px;
+}
+#todo-save {
+ width:5%;
+ height:36px;
+ background:#fff;
+ border:2px solid black
+}
+#todo-delall , #todo-delcom {
+ background:#fff;
+ border:1px solid black;
+ height:30px;
+ float:left;
+ position:relative;
+ left:2%;
+}
+
+.todo-item.cx {
+  background: #FFE1D7;
+  text-decoration: line-through;
+}
+.todo-item.done {
+  background: #DCFFD7;
+}
+.todo-cx, .todo-ok {
+  width: 50px;
+}
+.todo-cx {
+  background: #CF585C;
+  border: 2px solid #CF585C;
+}
+.todo-ok {
+  background: #4AA53D;
+  border: 2px solid #4AA53D;
+}
+.todo-row { 
+  display: flex; 
+  margin-top: 10px;
+}
+.todo-item { 
+  width: 100%; 
+  background: #fff;
+  border: 2px solid #000;
+  padding: 10px;
+}
+body {
+ overflow:auto;
+}
+ body::-webkit-scrollbar {
+    width: .75rem;
+}
+*::-webkit-scrollbar-track {
+    background-color: #000;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 9999px;
+}
+</style>
+
+  </head>
+  <body>
+<center>
+    <div id="todo-wrap">
+      <h1 id="headh1">Weberg To-do</h1>
+    
+      <form id="todo-add">
+        <input type="text" id="todo-item" placeholder="Add a new task" required/>
+        <input type="submit" id="todo-save" value="&#10010;"/>
+      </form><br>
+      
+      <div id="todo-del">
+        <input type="button" value="Delete All Tasks" id="todo-delall"/>
+        <input type="button" value="Delete Completed Tasks" id="todo-delcom"/>
+      </div><br><br><br><br><br>
+     
+      <div id="todo-list"></div>
+    </div>
+</center>
+<h3 style="position: absolute; bottom: 0px; right: 0px; font-size:7px;" align='right'>Copyright (c) 2021, Weberg Studios
+    All rights reserved.</h3>
+    </div>
+  </body>
+    <script>
+var todo = {
+  data: [], 
+  
+  // (A) LOAD DATA FROM LOCAL STORAGE INTO TODO.DATA
+  load: function () {
+    // (A1) INIT LOCALSTORAGE
+    if (localStorage.list == undefined) {
+      localStorage.list = "[]";
+    }
+
+    // (A2) DECODE PREVIOUS SESSION INTO TODO.DATA
+    // todo.data is an array with format of:
+    // [0] = Task
+    // [1] = Status : 0 not done, 1 completed, 2 cancelled
+    todo.data = JSON.parse(localStorage.list);
+    todo.list();
+  },
+
+  // (B) SAVE CURRENT DATA INTO LOCAL STORAGE
+  save: function () {
+
+    localStorage.list = JSON.stringify(todo.data);
+    todo.list();
+  },
+
+  // (C) DRAW TODO HTML
+  list: function () {
+    // (C1) CLEAR THE OLD LIST
+    var container = document.getElementById("todo-list");
+    container.innerHTML = "";
+
+    // (C2) BUILD LIST
+    if (todo.data.length > 0) {
+      var row = "", el = "";
+      for (var key in todo.data) {
+        // Item row
+        row = document.createElement("div");
+        row.classList.add("todo-row");
+        row.dataset.id = key;
+
+        // Item text
+        el = document.createElement("div");
+        el.classList.add("todo-item");
+        if (todo.data[key][1] == 1) {
+          el.classList.add("done");
+        }
+        if (todo.data[key][1] == 2) {
+          el.classList.add("cx");
+        }
+        el.innerHTML = todo.data[key][0];
+        row.appendChild(el);
+
+        // Cancel button
+        el = document.createElement("input");
+        el.setAttribute("type", "button");
+        el.value = "\u2716";
+        el.classList.add("todo-cx");
+        el.addEventListener("click", function () {
+          todo.status(this, 2);
+        });
+        row.appendChild(el);
+
+        // OK button
+        el = document.createElement("input");
+        el.setAttribute("type", "button");
+        el.value = "\u2714";
+        el.classList.add("todo-ok");
+        el.addEventListener("click", function () {
+          todo.status(this, 1);
+        });
+        row.appendChild(el);
+
+        // Add row to list
+        container.appendChild(row);
+      }
+    }
+  },
+
+  // (D) ADD NEW TODO ITEM
+  add: function () {
+
+    let item = document.getElementById("todo-item");
+    todo.data.push([item.value, 0]);
+    item.value = "";
+    todo.save();
+  },
+
+  // (E) UPDATE TODO ITEM STATUS
+  status: function (el, stat) {
+
+    todo.data[el.parentElement.dataset.id][1] = stat;
+    todo.save();
+  },
+
+  // (F) DELETE ITEM(S)
+  del: function (type) { if (confirm("Delete tasks?")) {
+      // (F1) DELETE ALL
+      if (type == 0) {
+        todo.data = [];
+        todo.save();
+      }
+      
+      // (F2) DELETE ONLY COMPLETED TASKS
+      else {
+        todo.data = todo.data.filter(row => row[1]==0);
+        todo.save();
+      }
+  }}
+};
+
+document.onkeydown = function(e) {
+        if (e.ctrlKey && 
+            (e.keyCode === 85 || 
+             e.keyCode === 80 || 
+             e.keyCode === 16 )) {
+            window.location.reload();
+            return false;
+        } else {
+            return true;
+        }
+};
+
+// (G) PAGE INIT
+window.addEventListener("load", function () {
+  document.getElementById("todo-delall").addEventListener("click", function () {
+    todo.del(0);
+  });
+  document.getElementById("todo-delcom").addEventListener("click", function () {
+    todo.del(1);
+  });
+  document.getElementById("todo-add").addEventListener("submit", function (evt) {
+    evt.preventDefault();
+    todo.add();
+  });
+  todo.load();
+});
+</script>
+</html>
