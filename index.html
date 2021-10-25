@@ -81,7 +81,7 @@ body {
 </style>
 
   </head>
-  <body oncontextmenu="false">
+  <body oncontextmenu="menu();">
 <center>
     <div id="todo-wrap">
       <h1 id="headh1">Weberg To-do</h1>
@@ -104,6 +104,11 @@ body {
     </div>
   </body>
     <script>
+      function menu() {
+        return false;
+      }else {
+        return true;
+      }
 var todo = {
   data: [], 
   
