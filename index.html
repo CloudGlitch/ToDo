@@ -258,17 +258,6 @@ var todo = {
   }}
 };
 
-document.onkeydown = function(e) {
-        if (e.ctrlKey && 
-            (e.keyCode === 85 || 
-             e.keyCode === 80 || 
-             e.keyCode === 16 )) {
-            window.location.reload();
-            return false;
-        } else {
-            return true;
-        }
-};
 
 // (G) PAGE INIT
 window.addEventListener("load", function () {
