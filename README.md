@@ -1,5 +1,5 @@
-# weberg-to-do
-Weberg To-Do created weberg studios
-have smothing to remember, now you can stor them in weberg to do.
+# ToDo
+Cloud To-Do created CloudGlitch
+have something to remember, now you can store them in Cloud To-Do
 
 current version : v1
